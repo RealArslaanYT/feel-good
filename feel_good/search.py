@@ -48,9 +48,12 @@ def search(query, inverted_index, documents, idf, top_n=10):
             tf = posting['tf']
 
             boost = 1
-            if term in documents[doc_id]['title'].lower():
+            title = (documents[doc_id].get('title') or '').lower()
+            url = (documents[doc_id].get('url') or '').lower()
+
+            if term in title:
                 boost *= 3
-            if term in documents[doc_id]['url'].lower():
+            if term in url:
                 boost *= 5
                 
             scores[doc_id] += tf * term_idf * boost
