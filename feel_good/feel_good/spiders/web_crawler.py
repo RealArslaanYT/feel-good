@@ -1,4 +1,3 @@
-# feel_good/spiders/web_crawler.py
 import scrapy
 import csv
 import os
@@ -6,7 +5,6 @@ import json
 import re
 from collections import defaultdict
 
-# Same stop words and tokenize from your build_index.py
 STOP_WORDS = {
     'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
     'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'been',
@@ -25,11 +23,39 @@ def tokenize(text):
 class WebCrawler(scrapy.Spider):
     name = 'feel_good_crawler'
     
-    # Class variables to track state across all requests
     seen_urls = set()
     inverted_index = defaultdict(list)
     documents = {}
     doc_id = 0
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.load_existing_index()
+    
+    def load_existing_index(self):
+        index_path = os.path.join(os.path.dirname(__file__), '..', '..', 'index.json')
+        docs_path = os.path.join(os.path.dirname(__file__), '..', '..', 'documents.json')
+        
+        if os.path.exists(index_path) and os.path.exists(docs_path):
+            print("Loading existing index...")
+            
+            with open(index_path, 'r', encoding='utf-8') as f:
+                loaded_index = json.load(f)
+                self.inverted_index = defaultdict(list, loaded_index)
+            
+            with open(docs_path, 'r', encoding='utf-8') as f:
+                self.documents = json.load(f)
+            
+            if self.documents:
+                self.doc_id = max(int(k) for k in self.documents.keys()) + 1
+            
+            self.seen_urls = {doc['url'] for doc in self.documents.values()}
+            
+            print(f"Loaded {len(self.documents)} existing documents")
+            print(f"Continuing from doc_id: {self.doc_id}")
+            print(f"Already seen {len(self.seen_urls)} URLs")
+        else:
+            print("No existing index found, starting fresh")
     
     async def start(self):
         csv_path = os.path.join(
@@ -55,34 +81,29 @@ class WebCrawler(scrapy.Spider):
                 count += 1
     
     def parse(self, response):
-        # Skip if already seen
         if response.url in self.seen_urls:
-            print(f'Skipped seen url {response.url}')
             return
         
         self.seen_urls.add(response.url)
         
-        # Extract data
         title = response.css('title::text').get()
         text = ' '.join(response.css('p::text').getall())
         
-        # Store document metadata
-        self.documents[self.doc_id] = {
+        doc_id_str = str(self.doc_id)
+        
+        self.documents[doc_id_str] = {
             'url': response.url,
             'title': title
         }
         
-        # Tokenize and build index
         title_tokens = tokenize(title)
         text_tokens = tokenize(text)
         all_tokens = title_tokens + text_tokens
         
-        # Build inverted index with positions
         word_positions = defaultdict(list)
         for position, word in enumerate(all_tokens):
             word_positions[word].append(position)
-        
-        # Add to inverted index
+
         for word, positions in word_positions.items():
             self.inverted_index[word].append({
                 'doc_id': self.doc_id,
@@ -93,25 +114,21 @@ class WebCrawler(scrapy.Spider):
         self.doc_id += 1
         
         if self.doc_id % 100 == 0:
-            print(f'Indexed {self.doc_id} documents...')
+            print(f'Indexed {self.doc_id} documents (total)...')
             self.save_index()
         elif self.doc_id % 10 == 0:
-            print(f"Indexed {self.doc_id} documents...")
+            print(f"Indexed {self.doc_id} documents (total)...")
         
-        # Follow links
         for link in response.css('a::attr(href)').getall():
             if link and not link.startswith(('javascript:', 'mailto:', 'tel:', '#')):
                 yield response.follow(link, callback=self.parse)
     
     def closed(self, reason):
-        """Called when spider finishes - save the index"""
-        print(f'\nSpider finished! Indexed {self.doc_id} documents')
+        print(f'\nSpider finished! Total documents: {self.doc_id}')
         print(f'Vocabulary size: {len(self.inverted_index)} unique words')
         self.save_index()
         
-        
     def save_index(self):
-        # Save index and documents
         index_path = os.path.join(os.path.dirname(__file__), '..', '..', 'index.json')
         docs_path = os.path.join(os.path.dirname(__file__), '..', '..', 'documents.json')
         
@@ -121,5 +138,4 @@ class WebCrawler(scrapy.Spider):
         with open(docs_path, 'w', encoding='utf-8') as f:
             json.dump(self.documents, f)
         
-        print(f'Saved index to {index_path}')
-        print(f'Saved documents to {docs_path}')
+        print(f'Saved index ({len(self.inverted_index)} terms, {len(self.documents)} docs)')
