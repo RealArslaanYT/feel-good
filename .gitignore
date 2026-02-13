@@ -2,6 +2,7 @@ feel_good/documents.json
 feel_good/index.json
 feel_good/*.index
 feel_good/*.json
+feel_good/*.jsonlines
 
 */__pycache__/
 *.py[cod]
