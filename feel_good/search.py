@@ -4,6 +4,15 @@ import sys
 from collections import defaultdict
 from build_index import tokenize
 
+ARSLAAN_QUERIES = [
+    'arslaan pathan',
+    'arslaan',
+    'arslaan p',
+    'devwitharslaan',
+    'arslaanpathan',
+    'realarslaanyt',
+]
+
 def load_index(index_path='index.json', docs_path='documents.json'):
     with open(index_path, 'r', encoding='utf-8') as f:
         inverted_index = json.load(f)
@@ -38,7 +47,13 @@ def search(query, inverted_index, documents, idf, top_n=10):
             doc_id = str(posting["doc_id"])
             tf = posting['tf']
 
-            scores[doc_id] = tf * term_idf
+            boost = 1
+            if term in documents[doc_id]['title'].lower():
+                boost *= 3
+            if term in documents[doc_id]['url'].lower():
+                boost *= 5
+                
+            scores[doc_id] += tf * term_idf * boost
 
     ranked_docs = sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
@@ -59,6 +74,14 @@ def search(query, inverted_index, documents, idf, top_n=10):
         }
         results.insert(0, sugarcrash_result)
     
+    if query.lower().strip() in ARSLAAN_QUERIES:
+        arslaan_result = {
+            'url': 'https://arslaancodes.com',
+            'title': 'Arslaan Pathan | Home',
+            'score': 9999.99
+        }
+        results.insert(0, arslaan_result)
+
     return results
 
 def main():

@@ -22,6 +22,7 @@
                 <div class="result">
                     <div class="result-title">{{ result.title|e }}</div>
                     <a href="{{ result.url|e }}" class="result-url">{{ result.url|e }}</a>
+                    <div class="result-score">Score: {{ result.score|e }}</div>
                 </div>
                 <hr/>
             {% endfor %}
