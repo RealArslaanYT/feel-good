@@ -3,6 +3,8 @@ a hobbyist search engine | made by [Arslaan Pathan](https://arslaancodes.com)
 
 'feel good' is a custom search engine from scratch, using TF-IDF for rankings and scrapy for crawling. This was mainly created as a side project, don't expect it to be stable or for the search rankings to be very accurate. It is very much a work-in-progress/PoC, and was more of a way for me to learn web scraping than something actually made to be useful.
 
+Live Demo: [https://feel-good.arslaancodes.com](https://feel-good.arslaancodes.com)
+
 ## Usage
 
 1. Install requirements with `pip` from requirements.txt
