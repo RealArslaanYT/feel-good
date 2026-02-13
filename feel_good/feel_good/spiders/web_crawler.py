@@ -56,7 +56,7 @@ class WebCrawler(scrapy.Spider):
             print(f"Already seen {len(self.seen_urls)} URLs")
         else:
             print("No existing index found, starting fresh")
-    
+        
     async def start(self):
         csv_path = os.path.join(
             os.path.dirname(__file__), 
@@ -77,7 +77,11 @@ class WebCrawler(scrapy.Spider):
                 domain = row[1].strip()
                 url = f'https://{domain}'
                 
-                yield scrapy.Request(url, callback=self.parse)
+                if url not in self.seen_urls:
+                    yield scrapy.Request(url, callback=self.parse)
+                else:
+                    print(f"Skipping already-crawled root: {url}")
+                
                 count += 1
     
     def parse(self, response):
@@ -121,7 +125,10 @@ class WebCrawler(scrapy.Spider):
         
         for link in response.css('a::attr(href)').getall():
             if link and not link.startswith(('javascript:', 'mailto:', 'tel:', '#')):
-                yield response.follow(link, callback=self.parse)
+                absolute_url = response.urljoin(link)
+                
+                if absolute_url not in self.seen_urls:
+                    yield scrapy.Request(absolute_url, callback=self.parse)
     
     def closed(self, reason):
         print(f'\nSpider finished! Total documents: {self.doc_id}')
