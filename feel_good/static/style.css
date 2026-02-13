@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    min-height: 100vh;
+    background: linear-gradient(199deg, rgba(44, 30, 47, 0.95) 0%, rgba(113, 43, 135, 0.95) 50%, rgba(44, 30, 47, 0.95) 98%), url('/static/puffy-stars.jpg');
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: #e7e7e7;
+    margin: 0;  /* remove default margin */
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    display: flex;
+}
+
+body.home-page {
+    justify-content: center;
+    align-items: center;
+}
+
+body.results-page {
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 2rem 2rem;  /* some spacing from edges */
+}
+
+
+h1, h3 {
+    margin: 0;
+}
+
+.arslaancodes-link {
+    color: #e7e7e7;
+}
+
+.home-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.results-content {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    align-self: left;
+    gap: 1rem;
+}
+
+.results-content a {
+    color: #fcd24d;
+}
+
+.search-bar {
+    width: 20rem;
+    height: 2.5rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid rgba(231, 231, 231, 0.3);
+    border-radius: 8px;
+    background: rgba(30, 30, 47, 0.5);
+    color: #e7e7e7;
+    font-size: 1rem;
+    font-family: "Poppins", sans-serif;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-bar:focus {
+    border-color: #fcd24d;
+}
+
+.search-bar::placeholder {
+    color: rgba(231, 231, 231, 0.5);
+}
+
+.search-button {
+    min-width: 5.5rem; /* the "Search" text is too big so just let it scale how it wants */
+    height: 2.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    background: #fcd24d;
+    color: #1E1E2F;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: "Poppins", sans-serif;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.search-button:hover {
+    background: #e3bb3a;
+    transform: translateY(-2px);
+}
+
+.search-button:active {
+    transform: translateY(0);
+}
+
+.search-form {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e7e7e7;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+.webpage-title-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.webpage-title a {
+    color: #e7e7e7;
+    text-decoration: none;
+}
+
+.webpage-subtitle {
+    color: #a7a7a7;
+}
+
+.webpage-logo {
+    width: 4rem;
+    height: 4rem;
+}

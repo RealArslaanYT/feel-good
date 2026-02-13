@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='logo/1-transparent.png') }}"/>
+    <title>feel good | Results for {{ query|e }}</title>
+</head>
+<body class="results-page">
+    <div class="results-content">
+        <div class="webpage-title-container">
+            <img class="webpage-logo" src="{{ url_for('static', filename='logo/1-transparent.png') }}"/>
+            <h1 class="webpage-title"><a href="/">feel good</a></h1>
+        </div>
+        <form method="GET" action="/search" class="search-form">
+            <input class="search-bar" name="q" type="text" placeholder="Search here..." value="{{ query|e }}"/>
+            <button class="search-button" type="submit">Search!</button>
+        </form>
+        {% if results %}
+            {% for result in results %}
+                <div class="result">
+                    <div class="result-title">{{ result.title|e }}</div>
+                    <a href="{{ result.url|e }}" class="result-url">{{ result.url|e }}</a>
+                </div>
+                <hr/>
+            {% endfor %}
+        {% else %}
+            <p>No results found for "{{ query|e }}"</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='logo/1-transparent.png') }}"/>
+    <title>feel good | Home</title>
+</head>
+<body class="home-page">
+    <div class="home-content">
+        <div class="webpage-title-container">
+            <img class="webpage-logo" src="{{ url_for('static', filename='logo/1-transparent.png') }}"/>
+            <h1 class="webpage-title"><a href="/">feel good</a></h1>
+        </div>
+        <h3 class="webpage-subtitle">a hobbyist search engine | made by <a class="arslaancodes-link" href="https://arslaancodes.com">Arslaan Pathan</a></h3>
+        <form method="GET" action="/search" class="search-form">
+            <input class="search-bar" name="q" type="text" placeholder="Search here..." value="{{ query }}"/>
+            <button class="search-button" type="submit">Search!</button>
+        </form>
+        <p>documents crawled: {{ doc_count }}</p>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.search-bar').focus();
+        });
+    </script>
+</body>
+</html>
